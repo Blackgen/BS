@@ -43,7 +43,6 @@ EOF
 split_textfiles()
 {
   echo "Teile $filename auf"
-  echo " $size - $filename |"
   split -l $size -d -a4 $filename $filename.
 }
 #
@@ -79,10 +78,8 @@ if [ $# -eq 1 ]; then
 elif [ $# -eq 3 ]; then
   case $2 in
     "-s")
-    echo "is -s"
       case $3 in
 	[0-9]*)
-	echo "is int"
 	  size=$3 # Größe wird gesetzt
 	  filename=$1
 	  if [ ${filename: -4} == ".txt" ]; then
