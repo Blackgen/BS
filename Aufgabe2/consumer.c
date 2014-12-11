@@ -1,0 +1,62 @@
+//#include "consumer.h"
+
+void readBuffer();
+int i = 0;
+void *consumer( void *pid)
+{
+	
+	printf("Consumer started; %d: \n", pid);
+	while(1)
+	{
+		i++;
+		pthread_testcancel();
+		pthread_mutex_lock(&rb_mutex);
+		// Überprüfen, ob alle Runbedingungen zutreffen.
+		while(p_rb -> count == 0 || cons_stopped)
+		{
+			// Überprüfen welche Runbedingung nich zutrifft:
+			if (p_rb -> count == 0 ){
+printf("consumer wartet\n");
+				pthread_cond_wait(&not_empty_condvar, &rb_mutex);
+
+			}
+			else if(cons_stopped){
+printf("consumer wartet 2 \n");
+				pthread_cond_wait(&cons_restart, &rb_mutex);
+
+			}
+		}
+//printf("consumer liest\n");
+		readBuffer();
+		if(p_rb -> count <= MAX)
+		{
+			//Buffer nicht voll --> signalisieren
+//printf("consumer: buffer nicht voll\n");
+			pthread_cond_signal(&not_full_condvar);
+		}
+		pthread_mutex_unlock(&rb_mutex);
+		sleep(consumer_sleep);
+	}
+	return NULL;
+}
+
+void readBuffer()
+	{
+	(p_rb -> count)--;
+
+	printf("%c - ", *(p_rb -> p_out));
+
+
+	fflush(stdout);
+
+	if ((i % 30) == 0)
+		{
+		printf("\n");
+		i = 0;
+		}
+	(p_rb -> p_out)++;
+	if((p_rb -> p_out) > p_end)
+		{
+		p_rb -> p_out = p_start;
+		}
+	}
