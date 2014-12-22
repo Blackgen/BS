@@ -7,20 +7,20 @@ void* control(int pid) {
 	printf("CTL gestartet\n");
 	while(run) 
 		{
-//printf("ctl running\n");
+printf("ctl running\n");
 		switch(getchar()) 
 			{
 			case '1': //toggle Producer1
 //printf("Eingabe1\n");
 				if (prod_1_stopped) 
 					{
-printf("1 neustart\n");
+printf("Neustart: Producer 1\n");
 					pthread_cond_signal(&prod_1_restart);
 					prod_1_stopped = 0;
 					} 
 				else 
 					{
-printf("1 beenden\n");
+printf("Stopp: Producer 1\n");
 					prod_1_stopped = 1;
 					}
 				break;
@@ -28,11 +28,13 @@ printf("1 beenden\n");
 //printf("Eingabe2\n");
 				if (prod_2_stopped) 
 					{
+printf("Neustart: Producer 2\n");
 					pthread_cond_signal(&prod_2_restart);
 					prod_2_stopped = 0;
 					}	 
 				else 
 					{
+printf("Stopp: Producer 2\n");
 					prod_2_stopped = 1;
 					}
 				break;
@@ -41,11 +43,13 @@ printf("1 beenden\n");
 //printf("Eingabec\n");
 				if (cons_stopped) 
 					{
+					printf("Neustart: Consumer\n");
 					pthread_cond_signal(&cons_restart);
 					cons_stopped = 0;
 					} 
 				else 
 					{
+printf("Stopp: Consumer\n");
 					cons_stopped = 1;
 					}
 				break;
@@ -66,5 +70,6 @@ printf("terminating\n");
 	pthread_cancel(threads[1]); // prod 1
 	pthread_cancel(threads[2]); // prod 2
 	pthread_cancel(threads[3]); // consumer
+printf("Alle terminiert, beende\n");
 	return NULL;
 }
